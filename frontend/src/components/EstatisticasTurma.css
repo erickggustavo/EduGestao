@@ -1,0 +1,74 @@
+/* ==========================================================================
+   EstatisticasAlunos.css - Refinamentos de UI/UX
+   ========================================================================== */
+
+/* 1. Scrollbar Minimalista (UI Clean)
+   Substitui a barra de rolagem cinza padrão do navegador por uma elegante. */
+.custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background-color: #cbd5e1; /* slate-300 */
+    border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background-color: #94a3b8; /* slate-400 */
+}
+
+/* 2. Animação de Entrada "Slide Up" (UX Motion)
+   Faz os elementos surgirem suavemente de baixo para cima ao carregar a página. */
+@keyframes slideUpFade {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-slide-up {
+    animation: slideUpFade 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    opacity: 0; /* Inicia invisível para a animação assumir */
+}
+
+/* Delays em cascata para os cards não aparecerem todos de uma vez (Stagger effect) */
+.delay-100 { animation-delay: 100ms; }
+.delay-200 { animation-delay: 200ms; }
+.delay-300 { animation-delay: 300ms; }
+.delay-400 { animation-delay: 400ms; }
+
+/* 3. Efeito de Flutuação nos Cards (Profundidade) */
+.card-hover-float {
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card-hover-float:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 20px 25px -5px rgba(79, 70, 229, 0.1), 0 8px 10px -6px rgba(79, 70, 229, 0.1);
+}
+
+/* 4. Efeito Glassmorphism (Vidro Fosco) para áreas de destaque */
+.glass-panel {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+}
+
+/* 5. Pulso suave para indicar que o loading está acontecendo */
+@keyframes softPulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+.animate-soft-pulse {
+    animation: softPulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
