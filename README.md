@@ -1,142 +1,136 @@
-Sistema de Gestão Escolar - Professor Carlos
+
+Sistema de Gestão Escolar - EduGestão 
 
 Descrição do Projeto
---Sistema completo para gerenciamento de notas e frequência de alunos, desenvolvido para o processo seletivo da DTI Digital. Permite ao professor Carlos acompanhar o desempenho da turma com estatísticas automáticas e identificação de alunos que precisam de atenção especial.
 
-*Instruções para Executar o Sistema
+Sistema completo Fullstack para gerenciamento de notas e frequência de alunos. Este foi um trabalho para faculdade, mas que também foi de grande serventia para o desenvolvimento das minhas habilidade. Permite a um professor acompanhar o desempenho da turma com estatísticas automáticas, visualização em dashboard moderno e identificação instantânea de alunos que precisam de atenção especial.
 
-Pré-requisitos
-- Node.js 16+ [Download](https://nodejs.org/)
-- Java JDK 8+ [Download](https://www.oracle.com/java/technologies/javase-downloads.html)
-- Maven 3.6+ [Download](https://maven.apache.org/)
+⚙️ Instruções para Executar o Sistema
 
-Execução do Sistema
+ Pré-requisitos
 
---1. Backend (Spring Boot)
+* Node.js 18+ [Download](https://nodejs.org/)
+* Java JDK 21 [Download](https://www.oracle.com/java/technologies/downloads/)
+* PostgreSQL 16+ [Download](https://www.postgresql.org/download/)
+
+ 1. Configuração do Banco de Dados
+
+Antes de rodar a aplicação, certifique-se de que o PostgreSQL está rodando na sua máquina.
+
+1. Abra o pgAdmin (ou terminal do psql).
+2. Crie um novo banco de dados chamado: `escoladti`
+3. O sistema criará as tabelas `alunos` e `aluno_notas` automaticamente ao iniciar.
+*(Nota: Verifique no arquivo `backend/sistema-notas/src/main/resources/application.properties` se o usuário e senha do banco correspondem à sua instalação local).*
+
+ 2. Execução do Backend (Spring Boot)
+
+O projeto utiliza o Maven Wrapper, garantindo a execução sem precisar instalar o Maven globalmente.
+
 ```bash
 # Terminal 1 - Backend
-cd backend
-mvn spring-boot:run
-```
-Verifique se a saida é: `Tomcat started on port(s): 8080`
+cd backend/sistema-notas
+./mvnw clean spring-boot:run
 
---2. Frontend (React)
+```
+
+*Verifique se a saída indica a inicialização na porta 8080 e a conexão bem-sucedida ao HikariPool (PostgreSQL).*
+
+ 3. Execução do Frontend (React)
+
 ```bash
 # Terminal 2 - Frontend  
 cd frontend
-npm install    # Apenas na primeira vez
+npm install    # Apenas na primeira vez para instalar as dependências
 npm start
+
 ```
-Verifique se a saida é: `Compiled successfully! Local: http://localhost:3000`
 
---3. Acesse a Aplicação**
-- Abra: http://localhost:3000
-- Backend API: http://localhost:8080
----
-
-##Premissas Assumidas**
-
-Funcionais
-1. Notas: 5 disciplinas fixas, notas de 0 a 10, aceita decimais
-2. Frequência: Percentual de 0% a 100%, aceita decimais
-3. Alerta: Frequência abaixo de 75% requer atenção especial
-4. Cálculos: Médias calculadas automaticamente pelo sistema
-5. Validações: Frontend (UX) + Backend (segurança)
-
-Técnicas
-1. Compatibilidade: Java 8+, Node.js 16+
-2. Comunicação: API REST JSON entre frontend/backend
-3. Persistência: Dados em memória (reinicia com aplicação)
-4. CORS: Configurado para desenvolvimento (localhost:3000 → localhost:8080)
-  
-Arquiteturais
-1. Separação: Frontend e backend independentes
-2. Stateless: API não mantém estado entre requisições
-3. Validação Dupla: Client-side (experiência) + Server-side (segurança)
+*A aplicação abrirá automaticamente no navegador em `http://localhost:3000`.*
 
 ---
 
-##Decisões de Projeto
+ 📌 Premissas Assumidas
 
-Arquitetura e Tecnologias
-| Decisão | Justificativa | Benefícios |
-|---------|---------------|------------|
-| Frontend/Backend Separados | Maior flexibilidade e manutenibilidade | Deploy independente, reutilização de API |
-| React + Spring Boot | Stack moderna e mercado | Grande comunidade, documentação rica |
-| API REST JSON | Padrão industry | Interoperabilidade, fácil debug |
-| Validação Dupla | Segurança + UX | Feedback imediato + proteção de dados |
+ Funcionais
 
-Design e UX
-| Decisão | Implementação | Impacto |
-|---------|---------------|---------|
-| Validação em Tempo Real | Mensagens de erro dinâmicas | Usuário corrige erros antes de enviar |
-| Feedback Visual | Loading states, cores, ícones | Experiência mais intuitiva |
-| Design Responsivo | CSS Grid/Flexbox + media queries | Funciona em qualquer dispositivo |
-| Cópia Defensiva | `array.clone()`, `new ArrayList<>()` | Previne efeitos colaterais |
+1. Notas: 5 disciplinas fixas, notas de 0 a 10, aceita casas decimais.
+2. **Frequência:** Percentual de 0% a 100%.
+3. **Alerta:** Frequência abaixo de 75% requer atenção especial.
+4. **Cálculos:** Médias calculadas e reativas automaticamente pelo sistema.
+5. **Gestão:** É possível excluir cadastros incorretos para manter a base limpa.
 
- Código e Organização
-| Decisão | Exemplo | Vantagem |
-|---------|---------|----------|
-| Componentes React Puros | `TabelaAlunos({ alunos })` | Reutilização, teste fácil |
-| Separação de Responsabilidades | Aluno(domínio) × Turma(regras) × Controller(API) | Manutenção mais fácil |
-| Tratamento de Erros Completo | `try/catch` + `finally` + `response.ok` | Sistema resiliente |
-| Hooks React Modernos | `useState`, `useEffect` | Código mais limpo e funcional |
+ Técnicas
 
-Validações e Segurança
-| Camada | Validações Implementadas | Propósito |
-|--------|--------------------------|-----------|
-|Frontend| Notas 0-10, frequência 0-100%, campos obrigatórios | UX - Feedback imediato |
-|Backend | `IllegalArgumentException`, cópia defensiva | Segurança - Integridade dos dados |
-|Formato | Vírgula/ponto para decimais, trim() em nomes | Flexibilidade do usuário |
+1. **Compatibilidade:** Java 21, Node.js 18+.
+2. **Comunicação:** API RESTful trafegando dados em formato JSON.
+3. **Persistência:** Banco de dados relacional (PostgreSQL) garantindo integridade e salvamento definitivo dos dados.
+4. **CORS:** Configurado e liberado para ambiente de desenvolvimento local.
 
+### Arquiteturais
 
-## Funcionalidades Implementadas
-
-Requisitos Obrigatórios
-- [x] Cadastro de Alunos com 5 notas e frequência
-- [x] Cálculo Automático de médias individuais
-- [x] Média da Turma por disciplina
-- [x] Identificação alunos acima da média da turma  
-- [x] Identificação alunos com frequência < 75%
-
-Funcionalidades Extra
-- [x] Validações em Tempo Real no frontend
-- [x] Interface Responsiva e moderna
-- [x] Feedback Visual com loading states
-- [x] Tratamento de Erros completo
-- [x] Dashboard com estatísticas visuais
+1. **Separação:** Arquitetura client-server com Frontend e Backend independentes.
+2. **Mapeamento Objeto-Relacional (ORM):** Uso de JPA/Hibernate para tradução automática de objetos Java para tabelas SQL.
+3. **Validação Dupla:** Client-side (melhorando a UX) + Server-side (garantindo a integridade no banco).
 
 ---
 
-## Melhorias Futuras
+ 🏗️ Decisões de Projeto
 
-Prioritárias
-- [ ] Banco de Dados (H2/PostgreSQL) para persistência
-- [ ] Autenticação JWT para múltiplos professores
-- [ ] Testes Automatizados (JUnit, React Testing Library)
-
- Interessantes
-- [ ] Exportação de relatórios em PDF/Excel
-- [ ] Gráficos interativos (Chart.js)
+| Camada | Decisão | Justificativa e Benefícios |
+| --- | --- | --- |
+| **Arquitetura** | Frontend/Backend Separados | Maior flexibilidade, deploy independente e escalabilidade do ecossistema. |
+| **Banco de Dados** | PostgreSQL + Spring Data JPA | Transição de dados em memória para persistência real, garantindo segurança, consultas eficientes e robustez corporativa. |
+| **Interface / UI** | Tailwind CSS + Lucide Icons | Estilização ágil, design responsivo moderno, efeitos de *backdrop-blur* e componentes visualmente ricos. |
+| **Código React** | React Hooks (`useState`, `useEffect`, `useMemo`) | Código mais limpo, prevenção de re-renderizações desnecessárias em cálculos de média e controle de estado eficiente. |
 
 ---
 
-## Tecnologias Utilizadas
+ ✨ Funcionalidades Implementadas
 
-Frontend
-- React 18 - Biblioteca UI
-- CSS3 - Estilização moderna
-- HTML5 - Estrutura semântica
-- Fetch API - Comunicação HTTP
+### Requisitos Obrigatórios
 
- Backend
-- Spring Boot 2.7 - Framework Java
-- Maven - Gerenciamento de dependências
-- Jackson - Serialização JSON
-- Tomcat - Servidor embutido
+* [x] Cadastro de Alunos com 5 notas e frequência.
+* [x] Cálculo Automático de médias individuais.
+* [x] Média da Turma por disciplina.
+* [x] Identificação de alunos com média acima do geral da turma.
+* [x] Identificação de alunos em estado de alerta (frequência < 75%).
+
+### Funcionalidades Extra
+
+* [x] **Persistência de Dados Real:** Integração completa com banco PostgreSQL.
+* [x] **Gestão de Registros:** Endpoint REST e botão na interface para Exclusão (DELETE) de alunos.
+* [x] **Dashboard Avançado:** Layout com *cards* estatísticos, barras de progresso por disciplina e listas separadas de destaques.
+* [x] **Sincronização Automática:** Atualização da tela em tempo real após inserção ou deleção no banco.
+* [x] **Tratamento de Erros:** Feedbacks visuais e alertas para falhas de conexão com o servidor.
 
 ---
 
-AUTOR: Erick Gustavo
+## 🚀 Melhorias Futuras
 
-Desenvolvido para o processo seletivo da DTI Digital
+* [ ] Implementação de Autenticação JWT e painel de login para os professores.
+* [ ] Dockerização da aplicação (Frontend + Backend + Banco) em um único `docker-compose`.
+* [ ] Criação de testes automatizados unitários (JUnit) e de interface (Jest/React Testing Library).
+* [ ] Endpoint para edição (PUT/PATCH) de informações de um aluno já cadastrado.
+
+---
+
+## 🛠️ Tecnologias Utilizadas
+
+### Frontend
+
+* **React 18** - Biblioteca UI
+* **Tailwind CSS** - Framework de estilização utilitária
+* **Lucide React** - Biblioteca de ícones modernos
+* **Fetch API** - Comunicação assíncrona HTTP
+
+### Backend
+
+* **Java 21** - Linguagem core
+* **Spring Boot 3.5.x** - Framework web
+* **Spring Data JPA / Hibernate** - Mapeamento e persistência (ORM)
+* **PostgreSQL** - Banco de dados relacional
+* **Maven** - Gerenciador de dependências e build
+
+---
+
+**AUTOR:** Erick Gustavo Amaral Oliveira
