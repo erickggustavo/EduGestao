@@ -11,10 +11,9 @@ import {
   ChevronUp,
   ChevronDown,
   GraduationCap,
-  UserCheck
+  UserCheck,
+  Trash2 // Ícone da lixeira importado aqui!
 } from 'lucide-react';
-
-// --- Subcomponentes para manter o código limpo (DRY) ---
 
 const StatCard = ({ title, value, subtitle, icon: Icon, colorClass, bgColorClass, delayClass }) => (
   <div className={`bg-white rounded-3xl p-6 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.05)] border border-slate-100/60 flex flex-col justify-between animate-slide-up card-hover-float ${delayClass}`}>
@@ -68,11 +67,30 @@ function EstatisticasTurma() {
     }
   };
 
+  // Função de exclusão conectada ao backend!
+  const handleDelete = async (idAluno) => {
+    if (window.confirm("Tem certeza que deseja excluir este aluno do sistema?")) {
+      try {
+        const response = await fetch(`http://localhost:8080/api/alunos/${idAluno}`, {
+          method: 'DELETE',
+        });
+        
+        if (response.ok) {
+          carregarDados(); // Recarrega a tela automaticamente
+        } else {
+          alert("Não foi possível excluir o aluno.");
+        }
+      } catch (error) {
+        console.error("Erro ao deletar:", error);
+        alert("Erro de conexão ao tentar deletar.");
+      }
+    }
+  };
+
   useEffect(() => {
     carregarDados();
   }, []);
 
-  // useMemo evita que as médias e listas sejam recalculadas a cada render
   const { alunosProcessados, destaques, alertas } = useMemo(() => {
     if (!alunos.length || !estatisticas) return { alunosProcessados: [], destaques: [], alertas: [] };
 
@@ -86,7 +104,7 @@ function EstatisticasTurma() {
         isDestaque: media > estatisticas.mediaGeralTurma,
         isAlerta: aluno.frequencia < 75
       };
-    }).sort((a, b) => b.mediaCalculada - a.mediaCalculada); // Ordena por maior média
+    }).sort((a, b) => b.mediaCalculada - a.mediaCalculada);
 
     return {
       alunosProcessados: processados,
@@ -95,7 +113,6 @@ function EstatisticasTurma() {
     };
   }, [alunos, estatisticas]);
 
-  // --- Estados de Carregamento e Erro ---
   if (carregando) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-[#F8FAFC]">
@@ -127,12 +144,10 @@ function EstatisticasTurma() {
     );
   }
 
-  // --- Renderização Principal ---
   return (
     <div className="min-h-screen bg-[#F8FAFC] text-slate-900 font-sans selection:bg-indigo-100 selection:text-indigo-900 p-4 md:p-8 lg:p-10">
       <div className="max-w-7xl mx-auto space-y-8">
         
-        {/* Header */}
         <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div>
             <h1 className="text-3xl font-extrabold text-slate-900 flex items-center gap-3 tracking-tight">
@@ -153,39 +168,15 @@ function EstatisticasTurma() {
           </button>
         </header>
 
-        {/* Cards Principais */}
         <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <StatCard 
-            title="Total" 
-            value={estatisticas.totalAlunos} 
-            subtitle="Alunos matriculados"
-            icon={Users} colorClass="text-blue-600" bgColorClass="bg-blue-50"
-          />
-          <StatCard 
-            title="Média" 
-            value={estatisticas.mediaGeralTurma?.toFixed(1)} 
-            subtitle="Geral da turma"
-            icon={Target} colorClass="text-emerald-600" bgColorClass="bg-emerald-50"
-          />
-          <StatCard 
-            title="Destaque" 
-            value={destaques.length} 
-            subtitle="Acima da média"
-            icon={TrendingUp} colorClass="text-indigo-600" bgColorClass="bg-indigo-50"
-          />
-          
-          <StatCard 
-            title="Alerta" 
-            value={alertas.length} 
-            subtitle="Frequência < 75%"
-            icon={AlertTriangle} colorClass="text-rose-600" bgColorClass="bg-rose-50"
-          />
+          <StatCard title="Total" value={estatisticas.totalAlunos} subtitle="Alunos matriculados" icon={Users} colorClass="text-blue-600" bgColorClass="bg-blue-50" />
+          <StatCard title="Média" value={estatisticas.mediaGeralTurma?.toFixed(1)} subtitle="Geral da turma" icon={Target} colorClass="text-emerald-600" bgColorClass="bg-emerald-50" />
+          <StatCard title="Destaque" value={destaques.length} subtitle="Acima da média" icon={TrendingUp} colorClass="text-indigo-600" bgColorClass="bg-indigo-50" />
+          <StatCard title="Alerta" value={alertas.length} subtitle="Frequência < 75%" icon={AlertTriangle} colorClass="text-rose-600" bgColorClass="bg-rose-50" />
         </section>
 
-        {/* Grid Inferior */}
         <section className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           
-          {/* Médias por Disciplina */}
           <div className="lg:col-span-1 bg-white rounded-3xl shadow-[0_2px_10px_-3px_rgba(6,81,237,0.05)] border border-slate-100/60 p-7 h-fit">
             <div className="flex items-center gap-3 mb-8">
               <div className="bg-slate-50 p-2 rounded-lg border border-slate-100">
@@ -206,17 +197,13 @@ function EstatisticasTurma() {
                     </span>
                   </div>
                   <div className="w-full bg-slate-100 rounded-full h-2.5 overflow-hidden">
-                    <div 
-                      className="bg-indigo-500 h-full rounded-full transition-all duration-700 ease-out"
-                      style={{ width: `${(media / 10) * 100}%` }}
-                    />
+                    <div className="bg-indigo-500 h-full rounded-full transition-all duration-700 ease-out" style={{ width: `${(media / 10) * 100}%` }} />
                   </div>
                 </div>
               ))}
             </div>
           </div>
 
-          {/* Lista de Alunos */}
           <div className="lg:col-span-2 bg-white rounded-3xl shadow-[0_2px_10px_-3px_rgba(6,81,237,0.05)] border border-slate-100/60 p-7">
             <div className="flex items-center justify-between mb-6 pb-4 border-b border-slate-100">
               <div className="flex items-center gap-3">
@@ -225,28 +212,16 @@ function EstatisticasTurma() {
                 </div>
                 <h3 className="text-xl font-bold text-slate-800 tracking-tight">Desempenho dos Alunos</h3>
               </div>
-              <button 
-                onClick={() => setAlunosExpandidos(!alunosExpandidos)}
-                className="text-sm text-indigo-600 hover:text-indigo-700 font-bold bg-indigo-50 px-4 py-2 rounded-lg transition-colors"
-              >
+              <button onClick={() => setAlunosExpandidos(!alunosExpandidos)} className="text-sm text-indigo-600 hover:text-indigo-700 font-bold bg-indigo-50 px-4 py-2 rounded-lg transition-colors">
                 {alunosExpandidos ? 'Ver Menos' : 'Ver Todos'}
               </button>
             </div>
 
             <div className="space-y-1">
               {alunosProcessados.slice(0, alunosExpandidos ? alunosProcessados.length : 5).map((aluno, index) => (
-                <div 
-                  key={index} 
-                  className={`
-                    flex flex-col sm:flex-row sm:items-center justify-between p-4 rounded-2xl transition-colors duration-200 gap-4 sm:gap-0
-                    ${aluno.isAlerta ? 'bg-rose-50/50 hover:bg-rose-50 border border-rose-100/50' : 'hover:bg-slate-50 border border-transparent'}
-                  `}
-                >
+                <div key={index} className={`flex flex-col sm:flex-row sm:items-center justify-between p-4 rounded-2xl transition-colors duration-200 gap-4 sm:gap-0 ${aluno.isAlerta ? 'bg-rose-50/50 hover:bg-rose-50 border border-rose-100/50' : 'hover:bg-slate-50 border border-transparent'}`}>
                   <div className="flex items-center gap-4">
-                    <div className={`
-                      w-10 h-10 rounded-xl flex items-center justify-center text-sm font-bold shadow-sm
-                      ${aluno.isDestaque ? 'bg-indigo-100 text-indigo-700' : 'bg-white text-slate-600 border border-slate-200'}
-                    `}>
+                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-sm font-bold shadow-sm ${aluno.isDestaque ? 'bg-indigo-100 text-indigo-700' : 'bg-white text-slate-600 border border-slate-200'}`}>
                       {aluno.nomeAluno.charAt(0)}
                     </div>
                     <div>
@@ -259,15 +234,12 @@ function EstatisticasTurma() {
                   
                   <div className="flex items-center gap-6 sm:justify-end ml-14 sm:ml-0">
                     <div className="text-left sm:text-right">
-                      <p className="text-sm font-extrabold text-slate-700">
-                        Média {aluno.mediaCalculada.toFixed(1)}
-                      </p>
-                      <p className={`text-xs font-bold mt-0.5 ${aluno.isAlerta ? 'text-rose-600' : 'text-slate-400'}`}>
-                        Freq. {aluno.frequencia}%
-                      </p>
+                      <p className="text-sm font-extrabold text-slate-700">Média {aluno.mediaCalculada.toFixed(1)}</p>
+                      <p className={`text-xs font-bold mt-0.5 ${aluno.isAlerta ? 'text-rose-600' : 'text-slate-400'}`}>Freq. {aluno.frequencia}%</p>
                     </div>
                     
-                    <div className="flex gap-2 w-12 justify-end">
+                    {/* Botões renderizados perfeitamente dentro do laço */}
+                    <div className="flex items-center gap-2 justify-end min-w-[5rem]">
                       {aluno.isDestaque && (
                         <span className="bg-amber-100 p-1.5 rounded-md text-amber-600" title="Acima da média">
                           <Star className="w-4 h-4 fill-current" />
@@ -278,7 +250,15 @@ function EstatisticasTurma() {
                           <AlertTriangle className="w-4 h-4" />
                         </span>
                       )}
+                      <button 
+                        onClick={() => handleDelete(aluno.id)}
+                        className="text-slate-400 hover:text-rose-600 hover:bg-rose-50 p-1.5 rounded-md transition-colors border border-transparent hover:border-rose-100"
+                        title="Excluir Aluno"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
                     </div>
+
                   </div>
                 </div>
               ))}
@@ -286,7 +266,6 @@ function EstatisticasTurma() {
           </div>
         </section>
 
-        {/* Seção de Insights (Footer) */}
         {(destaques.length > 0 || alertas.length > 0) && (
           <section className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4">
             {destaques.length > 0 && (
